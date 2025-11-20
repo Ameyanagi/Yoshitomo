@@ -1,6 +1,10 @@
-# Create T3 App
+# Yoshi!（ヨシ友、ヨシッ！）
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+現場の「よし！」を、最強の安全装置に変える
+
+A next-generation industrial safety management system that digitizes Japan's "指差呼称" (pointing and calling) safety practice using multimodal AI.
+
+Built with the [T3 Stack](https://create.t3.gg/).
 
 ## What's next? How do I make an app with this?
 
