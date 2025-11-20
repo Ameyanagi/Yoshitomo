@@ -46,6 +46,7 @@ export const authConfig = {
      */
   ],
   adapter: PrismaAdapter(db),
+  trustHost: true, // Trust all hosts (localhost:6666, yoshitomo.rxx.jp)
   callbacks: {
     session: ({ session, user }) => ({
       ...session,

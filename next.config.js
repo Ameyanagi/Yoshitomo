@@ -8,6 +8,9 @@ import "./src/env.js";
 const config = {
   // Standalone output for Docker deployment
   output: "standalone",
+
+  // Allow cross-origin requests from production domain
+  allowedDevOrigins: ["https://yoshitomo.rxx.jp"],
 };
 
 export default config;
