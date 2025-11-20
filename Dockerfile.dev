@@ -1,0 +1,25 @@
+FROM oven/bun:1.3-alpine
+
+RUN apk add --no-cache libc6-compat openssl
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json bun.lock ./
+COPY prisma ./prisma/
+
+# Install dependencies
+RUN bun install
+
+# Copy the rest of the application
+# Note: In dev mode, we'll mount the source code as a volume for hot reload
+# This COPY is for initial setup only
+COPY . .
+
+# Generate Prisma Client
+RUN bunx prisma generate
+
+EXPOSE 3000
+
+# Development command with hot reload
+CMD ["bun", "run", "dev"]

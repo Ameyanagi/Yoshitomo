@@ -1,0 +1,63 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: yoshi-db-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: yoshi
+    ports:
+      - "5432:5432"  # Internal DB access
+      - "6670:5432"  # External debug access
+    volumes:
+      - postgres-data-dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: yoshi-app-dev
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "6666:3000"
+    environment:
+      # Database
+      DATABASE_URL: postgresql://postgres:password@db:5432/yoshi
+
+      # Auth
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:6666}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+
+      # OAuth Providers
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
+      DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET}
+
+      # AI Services
+      SAMBANOVA_API_KEY: ${SAMBANOVA_API_KEY}
+      HUME_AI_API_KEY: ${HUME_AI_API_KEY}
+      HUME_AI_SECRET_KEY: ${HUME_AI_SECRET_KEY}
+
+      # Development
+      NODE_ENV: development
+      SKIP_ENV_VALIDATION: 1
+    volumes:
+      # Mount source code for hot reload
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    command: bun run dev
+
+volumes:
+  postgres-data-dev:
+    driver: local

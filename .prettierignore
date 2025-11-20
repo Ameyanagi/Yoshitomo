@@ -1,0 +1,15 @@
+# Prisma generated client
+generated/
+
+# Dependencies
+node_modules
+
+# Build outputs
+.next
+out
+dist
+build
+
+# Misc
+.cache
+*.log

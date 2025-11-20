@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: yoshi-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: yoshi
+    ports:
+      - "6670:5432"  # External debug access only
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DATABASE_URL: postgresql://postgres:password@db:5432/yoshi
+    container_name: yoshi-app
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "6666:3000"
+    environment:
+      # Database
+      DATABASE_URL: postgresql://postgres:password@db:5432/yoshi
+
+      # Auth
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-https://yoshitomo.rxx.jp}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+
+      # OAuth Providers
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
+      DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET}
+
+      # AI Services
+      SAMBANOVA_API_KEY: ${SAMBANOVA_API_KEY}
+      HUME_AI_API_KEY: ${HUME_AI_API_KEY}
+      HUME_AI_SECRET_KEY: ${HUME_AI_SECRET_KEY}
+
+      # Production
+      NODE_ENV: production
+
+volumes:
+  postgres-data:
+    driver: local
