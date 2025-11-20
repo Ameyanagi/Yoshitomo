@@ -17,8 +17,11 @@ export default async function Home() {
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
+            Yoshi! <span className="text-[hsl(280,100%,70%)]">ヨシ友</span>
           </h1>
+          <p className="text-xl text-white/80">
+            現場の「よし！」を、最強の安全装置に変える
+          </p>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
@@ -52,12 +55,33 @@ export default async function Home() {
               <p className="text-center text-2xl text-white">
                 {session && <span>Logged in as {session.user?.name}</span>}
               </p>
-              <Link
-                href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-              >
-                {session ? "Sign out" : "Sign in"}
-              </Link>
+
+              {session ? (
+                <Link
+                  href="/api/auth/signout"
+                  className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+                >
+                  Sign out
+                </Link>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <p className="text-center text-lg text-white/70">
+                    Test OAuth Providers:
+                  </p>
+                  <Link
+                    href="/api/auth/signin/google"
+                    className="rounded-full bg-blue-600 px-10 py-3 font-semibold no-underline transition hover:bg-blue-700"
+                  >
+                    🔐 Sign in with Google
+                  </Link>
+                  <Link
+                    href="/api/auth/signin/discord"
+                    className="rounded-full bg-indigo-600 px-10 py-3 font-semibold no-underline transition hover:bg-indigo-700"
+                  >
+                    🎮 Sign in with Discord
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
 
